@@ -1,0 +1,22 @@
+noResults: "no results found"
+numberOfResults: Number of results
+pageNavigation: Page navigation
+nextPage: Next page
+previousPage: Previous page
+
+filter:
+	toolbar: Filter toolbar
+	actions: Filter actions
+	submit:
+		label: Filter
+	cancel:
+		label: Cancel
+
+adjust:
+	columns: Adjust columns
+	toggle: Toggle inputs
+	form:
+		columns:
+			label: Active columns
+		save:
+			label: Save

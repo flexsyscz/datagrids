@@ -1,0 +1,22 @@
+noResults: "nebyly nalezeny žádné výsledky"
+numberOfResults: Počet záznamů
+pageNavigation: Navigace stránkování
+nextPage: Další stránka
+previousPage: Předchozí stránka
+
+filter:
+	toolbar: Nástroje filtru
+	actions: Akce filtru
+	submit:
+		label: Filtrovat
+	cancel:
+		label: Zrušit
+
+adjust:
+	columns: Nastavit sloupce
+	toggle: "Vybrat / odznačit vše"
+	form:
+		columns:
+			label: Aktivní sloupce
+		save:
+			label: Uložit

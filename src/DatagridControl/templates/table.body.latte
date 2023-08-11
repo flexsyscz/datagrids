@@ -1,0 +1,18 @@
+{templateType Flexsyscz\Datagrids\DatagridControl\DatagridTemplate}
+
+<tbody>
+    {foreach $rows as $row}
+        <tr class="{$row|formatRow}">
+            <td n:foreach="$columns as $column" n:if="!isset($adjustableColumns) || !isset($adjustableColumns[$column->getName()]) || $adjustableColumns[$column->getName()]" n:class="!isset($metadata[$column->getName()][wrap]) || $metadata[$column->getName()][wrap] ? text-nowrap">
+                {var $value = isset($row->getMetadata()->getProperties()[$column->getName()]) ? $row->getValue($column->getName()) : null}
+                {$value|renderCell:$column->getName(), $row}
+            </td>
+        </tr>
+    {else}
+        <tr>
+            <td colspan="{count($columns)}" class="table-info text-center">
+                <i class="fas fa-info-circle me-2"></i>{_'!datagrid.noResults'}
+            </td>
+        </tr>
+    {/foreach}
+</tbody>
