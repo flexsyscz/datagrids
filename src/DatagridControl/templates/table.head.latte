@@ -2,6 +2,9 @@
 
 <thead>
     <tr class="table-secondary">
+        <th n:if="isset($selectable) && $selectable">
+            <input type="checkbox" class="form-check-input mx-2" name="allItems" data-fxs-toggle="allItems" data-fxs-url="{link toggleAllItems}"{if isset($selectedItems) && $paginator->itemCount === count($selectedItems)} checked{/if}>
+        </th>
         <th n:foreach="$columns as $column" n:if="!isset($adjustableColumns) || !isset($adjustableColumns[$column->getName()]) || $adjustableColumns[$column->getName()]">
             <div class="d-flex align-items-center">
                 <div class="flex-grow-1">
@@ -14,6 +17,7 @@
         </th>
     </tr>
     <tr n:class="$filtered ? table-warning : table-light">
+        <th n:if="isset($selectable) && $selectable"></th>
         <th n:foreach="$columns as $column" n:if="!isset($adjustableColumns) || !isset($adjustableColumns[$column->getName()]) || $adjustableColumns[$column->getName()]">
             <div n:ifset="$form[$column->getName()]">{input $column->getName()}</div>
         </th>

@@ -32,4 +32,9 @@ final class DatagridTemplate extends Template
 
 	/** @var array<string[]|int[]|bool[]> */
 	public array $metadata;
+
+	public bool $selectable = false;
+
+	/** @var int[]|string[] */
+	public array $selectedItems = [];
 }

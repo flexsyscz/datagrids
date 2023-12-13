@@ -8,7 +8,9 @@ use Flexsyscz\Datagrids\Column;
 use Flexsyscz\FlashMessages\FlashMessages;
 use Flexsyscz\Localization\TranslatedComponent;
 use Latte\Attributes\TemplateFilter;
+use Nette\Application\AbortException;
 use Nette\Application\Attributes\Persistent;
+use Nette\Application\Responses\TextResponse;
 use Nette\Application\UI\Control;
 use Nette\Application\UI\Form;
 use Nette\Application\UI\Template;
@@ -28,6 +30,9 @@ abstract class Datagrid extends Control
 	use TranslatedComponent;
 	use FlashMessages;
 
+
+	public const    OffsetColumns = 'columns',
+					OffsetSelectedItems = 'selectedItems';
 
 	#[Persistent]
 	public int $page = 1;
@@ -58,6 +63,11 @@ abstract class Datagrid extends Control
 
 	protected int $itemsPerPage = 50;
 
+	protected bool $selectable = false;
+
+	/** @var callable|null */
+	protected $selectableCallback = null;
+
 
 	public function injectSession(Session $session): void
 	{
@@ -81,90 +91,6 @@ abstract class Datagrid extends Control
 		}
 
 		return $template;
-	}
-
-
-	public function addColumn(string $name, ?callable $renderer = null, ?string $alias = null): Column
-	{
-		$this->columns[$name] = new Column($name, $renderer, $alias);
-		return $this->columns[$name];
-	}
-
-
-	public function addAdjustableColumn(string $name, ?callable $renderer = null, ?string $alias = null): Column
-	{
-		$this->adjustableColumns[$name] = false;
-		return $this->addColumn($name, $renderer, $alias);
-	}
-
-
-	public function registerRowFormatter(callable $formatter): self
-	{
-		$this->rowFormatter = $formatter;
-
-		return $this;
-	}
-
-
-	/**
-	 * @return Column[]
-	 */
-	public function getColumns(): array
-	{
-		return $this->columns;
-	}
-
-
-	/**
-	 * @return bool[]
-	 */
-	public function getAdjustableColumns(): array
-	{
-		$columns = $this->adjustableColumns;
-		$session = $this->getSession();
-		if($session->offsetExists('columns')) {
-			foreach ($session->offsetGet('columns') as $name => $column) {
-				$columns[$name] = $column;
-			}
-		}
-
-		return $columns;
-	}
-
-
-	protected function getPaginator(): Paginator
-	{
-		$paginator = new Paginator();
-
-		$this->onAnchor[] = function() use ($paginator) {
-			$paginator->setPage($this->page);
-		};
-
-		return $paginator->setItemCount($this->collection->countStored())
-			->setItemsPerPage($this->itemsPerPage)
-			->setPage($this->page);
-	}
-
-
-	public function getColumnSorter(string $name): ?callable
-	{
-		return isset($this->columns[$name]) ? $this->columns[$name]->getSorter() : null;
-	}
-
-
-	public function getCollectionAfterSorting(): ICollection
-	{
-		$sorter = $this->getColumnSorter($this->sortBy);
-		if(is_callable($sorter)) {
-			$collection = call_user_func_array($sorter, [$this->collection, $this->order]);
-			if($collection instanceof ICollection) {
-				$this->collection = $collection;
-			}
-		} else {
-			$this->collection = $this->collection->orderBy($this->sortBy, $this->order);
-		}
-
-		return $this->collection;
 	}
 
 
@@ -196,6 +122,96 @@ abstract class Datagrid extends Control
 	}
 
 
+	public function registerRowFormatter(callable $formatter): self
+	{
+		$this->rowFormatter = $formatter;
+
+		return $this;
+	}
+
+
+	public function addColumn(string $name, ?callable $renderer = null, ?string $alias = null): Column
+	{
+		$this->columns[$name] = new Column($name, $renderer, $alias);
+		return $this->columns[$name];
+	}
+
+
+	public function addAdjustableColumn(string $name, ?callable $renderer = null, ?string $alias = null): Column
+	{
+		$this->adjustableColumns[$name] = false;
+		return $this->addColumn($name, $renderer, $alias);
+	}
+
+
+	/**
+	 * @return Column[]
+	 */
+	public function getColumns(): array
+	{
+		return $this->columns;
+	}
+
+
+	/**
+	 * @return bool[]
+	 */
+	public function getAdjustableColumns(): array
+	{
+		$columns = $this->adjustableColumns;
+		$session = $this->getSession();
+		if($session->offsetExists(self::OffsetColumns)) {
+			$_columns = $session->offsetGet(self::OffsetColumns);
+			if (is_array($_columns)) {
+				foreach ($_columns as $name => $column) {
+					$columns[$name] = $column;
+				}
+			}
+		}
+
+		return $columns;
+	}
+
+
+	protected function getPaginator(): Paginator
+	{
+		$paginator = new Paginator();
+
+		return $paginator->setItemCount($this->collection->countStored())
+			->setItemsPerPage($this->itemsPerPage)
+			->setPage($this->page);
+	}
+
+
+	public function getColumnSorter(string $name): ?callable
+	{
+		return isset($this->columns[$name]) ? $this->columns[$name]->getSorter() : null;
+	}
+
+
+	public function getCollectionAfterSorting(): ICollection
+	{
+		$sorter = $this->getColumnSorter($this->sortBy);
+		if(is_callable($sorter)) {
+			$collection = call_user_func_array($sorter, [$this->collection, $this->order]);
+			if($collection instanceof ICollection) {
+				$this->collection = $collection;
+			}
+		} else {
+			$this->collection = $this->collection->orderBy($this->sortBy, $this->order);
+		}
+
+		return $this->collection;
+	}
+
+
+	public function resetCollection(ICollection $collection): void
+	{
+		$this->collection = $collection;
+		$this->paginator = $this->getPaginator();
+	}
+
+
 	protected function createComponentAdjustColumnsForm(): Form
 	{
 		$form = new Form();
@@ -205,7 +221,7 @@ abstract class Datagrid extends Control
 			$items[$column] = $this->translate($column);
 		}
 
-		$form->addCheckboxList('columns', $this->translate('!datagrid.adjust.form.columns.label'))
+		$form->addCheckboxList(self::OffsetColumns, $this->translate('!datagrid.adjust.form.columns.label'))
 			->setRequired(false)
 			->setItems($items);
 
@@ -219,7 +235,7 @@ abstract class Datagrid extends Control
 				}
 			}
 			$form->setDefaults([
-				'columns' => $columns,
+				self::OffsetColumns => $columns,
 			]);
 		} catch (InvalidArgumentException $e) {
 			$form->addError($e->getMessage());
@@ -228,16 +244,18 @@ abstract class Datagrid extends Control
 		$form->onSuccess[] = function(Form $form) {
 			try {
 				$columns = $this->adjustableColumns;
-				$httpData = $form->getHttpData(Form::DataText, 'columns[]');
-				foreach ($httpData as $name) {
-					$columns[$name] = true;
+				$httpData = $form->getHttpData($form::DataText, 'columns[]');
+				if (is_array($httpData)) {
+					foreach ($httpData as $name) {
+						$columns[$name] = true;
+					}
 				}
 
 				if (is_callable($this->onAdjustColumns)) {
 					call_user_func(Callback::check($this->onAdjustColumns), $columns);
 				}
 
-				$this->getSession()->offsetSet('columns', $columns);
+				$this->getSession()->offsetSet(self::OffsetColumns, $columns);
 			} catch (InvalidArgumentException $e) {
 				$form->addError($e->getMessage());
 				return;
@@ -247,5 +265,112 @@ abstract class Datagrid extends Control
 		};
 
 		return $form;
+	}
+
+
+	public function setItemsSelectionCallback(?callable $callback): void
+	{
+		$this->selectable = is_callable($callback);
+		$this->selectableCallback = $callback;
+	}
+
+
+	/**
+	 * @param int $itemId
+	 * @return void
+	 * @throws AbortException
+	 */
+	public function handleToggleItem(int $itemId): void
+	{
+		$presenter = $this->getPresenter();
+		if (!$presenter->isAjax()) {
+			$this->redirect('this');
+		}
+
+		$items = [];
+		$session = $this->getSession();
+		if ($session->offsetExists(self::OffsetSelectedItems)) {
+			$items = $session->offsetGet(self::OffsetSelectedItems);
+			if (!is_array($items)) {
+				$items = [];
+			}
+		}
+
+		$item = $this->collection->getById($itemId);
+		if ($item instanceof IEntity) {
+			$state = $presenter->getHttpRequest()->getPost('state') === 'true';
+			if ($state) {
+				$items[$itemId] = $itemId;
+			} else {
+				unset($items[$itemId]);
+			}
+
+			$session->offsetSet(self::OffsetSelectedItems, $items);
+			$payload = ['selected' => $state];
+
+		} else {
+			$presenter->getHttpResponse()->setCode(404);
+			$presenter->sendResponse(new TextResponse(sprintf('Item %s not found', $itemId)));
+		}
+
+		$presenter->sendJson($payload);
+	}
+
+
+	/**
+	 * @return void
+	 * @throws AbortException
+	 */
+	public function handleToggleAllItems(): void
+	{
+		$presenter = $this->getPresenter();
+		if (!$presenter->isAjax()) {
+			$this->redirect('this');
+		}
+
+		$session = $this->getSession();
+		$state = $presenter->getHttpRequest()->getPost('state') === 'true';
+		$items = $state ? $this->collection->fetchPairs('id', 'id') : [];
+		$session->offsetSet(self::OffsetSelectedItems, $items);
+		$payload = [self::OffsetSelectedItems => $items];
+
+		$presenter->sendJson($payload);
+	}
+
+
+	/**
+	 * @param int[]|string[] $itemIds
+	 * @return void
+	 */
+	public function setSelectedItems(array $itemIds): void
+	{
+		$session = $this->getSession();
+
+		$items = [];
+		if ($session->offsetExists(self::OffsetSelectedItems)) {
+			$items = $session->offsetGet(self::OffsetSelectedItems);
+
+			if (!is_array($items)) {
+				$items = [];
+			}
+		}
+
+		foreach ($itemIds as $itemId) {
+			$item = $this->collection->getById($itemId);
+			if ($item instanceof IEntity) {
+				$items[$itemId] = $itemId;
+			}
+		}
+
+		$session->offsetSet(self::OffsetSelectedItems, $items);
+	}
+
+
+	public function flushSelectedItems(): void
+	{
+		$session = $this->getSession();
+		if ($session->offsetExists(self::OffsetSelectedItems)) {
+			$session->offsetUnset(self::OffsetSelectedItems);
+		}
 	}
 }

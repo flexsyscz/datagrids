@@ -12,6 +12,12 @@ filter:
 	cancel:
 		label: Zrušiť
 
+itemsSelection:
+	toolbar: Výber položiek
+	actions: Akcia výberu položiek
+	submit:
+		label: Pokračovať s vybranými položkami
+		
 adjust:
 	columns: Nastaviť stĺpce
 	toggle: "Vybrať / odznačiť všetko"

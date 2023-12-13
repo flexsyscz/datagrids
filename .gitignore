@@ -1,3 +1,4 @@
 /vendor
 /composer.lock
 /intellij-latte-pro.xml
+/node_modules

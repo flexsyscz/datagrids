@@ -15,18 +15,19 @@
                 </div>
                 <div class="d-flex align-items-center mb-4">
                     <div class="flex-grow-1">
-                        {label columns class => "form-label fw-bold border-bottom"/}
+                        {label Flexsyscz\Datagrids\DatagridControl\Datagrid::OffsetColumns class => "form-label fw-bold border-bottom"/}
                     </div>
                     <div class="ms-4">
-                        <button type="button" class="btn btn-outline-secondary btn-sm" data-toggle="true" onclick="const state = this.dataset.toggle === 'true'; Array.from(document.querySelectorAll('.adjustable-columns input[type=checkbox]')).forEach((el) => { el.checked = state }); this.dataset.toggle = state ? 'false' : 'true'">{_'!datagrid.adjust.toggle'}</button>
+                        <button type="button" class="btn btn-outline-secondary btn-sm" data-fxs-toggle="adjustColumns">{_'!datagrid.adjust.toggle'}</button>
                     </div>
                 </div>
                 {var $keys = array_keys($adjustableColumns)}
                 <div class="d-flex flex-row adjustable-columns mb-3">
+                    {var $key = Flexsyscz\Datagrids\DatagridControl\Datagrid::OffsetColumns}
                     <div n:for="$i = 0; $i < ceil(count($keys) / 10); $i++" class="me-5">
                         <div n:foreach="array_slice($keys, $i * 10, 10) as $name" class="mb-2">
-                            {input columns:$name class => "form-check-input"}
-                            {label columns:$name class => "form-check-label"/}
+                            {input $key:$name class => "form-check-input"}
+                            {label $key:$name class => "form-check-label"/}
                         </div>
                     </div>
                 </div>
@@ -40,13 +41,20 @@
             <div n:if="$toolbar" class="flex-grow-1 toolbar">
                 {include $toolbar}
             </div>
-            <div n:class="$toolbar ? ms-5, flex-grow-1">
+            <div n:class="$toolbar ? ms-5, !isset($selectable) || !$selectable ? flex-grow-1">
                 <div class="btn-toolbar" role="toolbar" aria-label="{_'!datagrid.filter.toolbar'}">
                     <div class="btn-group" role="group" aria-label="{_'!datagrid.filter.actions'}">
                         {input submit class => "btn btn-sm btn-outline-success"}
                         {ifset $form[cancel]}
                             {input cancel class => "btn btn-sm btn-danger"}
                         {/ifset}
+                    </div>
+                </div>
+            </div>
+            <div n:if="isset($selectable) && $selectable" class="ms-2 flex-grow-1">
+                <div class="btn-toolbar" role="toolbar" aria-label="{_'!datagrid.itemsSelection.toolbar'}">
+                    <div class="btn-group" role="group" aria-label="{_'!datagrid.itemsSelection.actions'}">
+                        {input itemsSelectionSubmit class => "btn btn-sm btn-primary"}
                     </div>
                 </div>
             </div>

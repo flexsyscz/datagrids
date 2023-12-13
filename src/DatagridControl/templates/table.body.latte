@@ -2,7 +2,11 @@
 
 <tbody>
     {foreach $rows as $row}
-        <tr class="{$row|formatRow}">
+        {var $primaryValue = $row->getValue(current($row->getMetadata()->getPrimaryKey()))}
+        <tr class="{$row|formatRow}{if isset($selectable) && $selectable && isset($selectedItems) && isset($selectedItems[$primaryValue])} table-success{/if}" id="item{$primaryValue}">
+            <td n:if="isset($selectable) && $selectable" class="selectable">
+                <input type="checkbox" class="form-check-input mx-2" name="item{$primaryValue}" data-fxs-toggle="item" data-fxs-url="{link toggleItem $primaryValue}"{if isset($selectedItems) && isset($selectedItems[$primaryValue])} checked{/if}>
+            </td>
             <td n:foreach="$columns as $column" n:if="!isset($adjustableColumns) || !isset($adjustableColumns[$column->getName()]) || $adjustableColumns[$column->getName()]" n:class="!isset($metadata[$column->getName()][wrap]) || $metadata[$column->getName()][wrap] ? text-nowrap">
                 {var $value = isset($row->getMetadata()->getProperties()[$column->getName()]) ? $row->getValue($column->getName()) : null}
                 {$value|renderCell:$column->getName(), $row}
