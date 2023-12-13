@@ -2,7 +2,7 @@
 
 <tfoot n:if="$paginator->itemCount">
     <tr class="table-warning">
-        <td colspan="{count($columns)}">
+        <td colspan="{count($columns) + (isset($selectable) && $selectable ? 1 : 0)}">
             <small><strong>{_'!datagrid.numberOfResults'}:</strong> {$paginator->itemCount}</small>
         </td>
     </tr>

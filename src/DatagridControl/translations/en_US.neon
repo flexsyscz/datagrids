@@ -12,6 +12,12 @@ filter:
 	cancel:
 		label: Cancel
 
+itemsSelection:
+	toolbar: Selection of items
+	actions: Items selection action
+	submit:
+		label: Continue with selected items
+
 adjust:
 	columns: Adjust columns
 	toggle: Toggle inputs
