@@ -373,4 +373,13 @@ abstract class Datagrid extends Control
 			$session->offsetUnset(self::OffsetSelectedItems);
 		}
 	}
+
+
+	public function handleUpdateBody(): void
+	{
+		if ($this->getPresenter()->isAjax()) {
+			$this->redrawControl('datagrid');
+			$this->redrawControl('body');
+		}
+	}
 }

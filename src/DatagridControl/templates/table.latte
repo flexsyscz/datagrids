@@ -1,7 +1,7 @@
 {templateType Flexsyscz\Datagrids\DatagridControl\DatagridTemplate}
 {varType int $p}
 
-<div class="datagrid">
+<div class="datagrid" n:snippetArea="datagrid" data-update-body-url="{link updateBody}">
     <div n:ifset="$adjustableColumns" n:if="!empty($adjustableColumns)" class="dropdown mb-2">
         <button class="btn btn-outline-secondary btn-sm dropdown-toggle" type="button" data-bs-toggle="dropdown" data-bs-auto-close="outside">
             <i class="fa-solid fa-gear me-2"></i>{_'!datagrid.adjust.columns'}
