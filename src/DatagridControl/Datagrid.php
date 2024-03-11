@@ -78,7 +78,7 @@ abstract class Datagrid extends Control
 	abstract protected function getSession(): SessionSection;
 
 
-	protected function createTemplate(): Template
+	protected function createTemplate(?string $class = null): Template
 	{
 		$template = parent::createTemplate();
 		$template->setFile(__DIR__ . '/templates/table.latte');
