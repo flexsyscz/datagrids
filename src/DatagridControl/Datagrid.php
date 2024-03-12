@@ -38,7 +38,7 @@ abstract class Datagrid extends Control
 	public int $page = 1;
 
 	#[Persistent]
-	public string $sortBy;
+	public ?string $sortBy;
 
 	#[Persistent]
 	public string $order = ICollection::ASC;
@@ -191,14 +191,16 @@ abstract class Datagrid extends Control
 
 	public function getCollectionAfterSorting(): ICollection
 	{
-		$sorter = $this->getColumnSorter($this->sortBy);
-		if(is_callable($sorter)) {
-			$collection = call_user_func_array($sorter, [$this->collection, $this->order]);
-			if($collection instanceof ICollection) {
-				$this->collection = $collection;
+		if ($this->sortBy) {
+			$sorter = $this->getColumnSorter($this->sortBy);
+			if (is_callable($sorter)) {
+				$collection = call_user_func_array($sorter, [$this->collection, $this->order]);
+				if ($collection instanceof ICollection) {
+					$this->collection = $collection;
+				}
+			} else {
+				$this->collection = $this->collection->orderBy($this->sortBy, $this->order);
 			}
-		} else {
-			$this->collection = $this->collection->orderBy($this->sortBy, $this->order);
 		}
 
 		return $this->collection;
