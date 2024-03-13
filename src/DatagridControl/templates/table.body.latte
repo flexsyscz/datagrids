@@ -2,6 +2,7 @@
 
 <tbody n:snippet="body">
     {foreach $rows as $row}
+        {$row|renderVirtualRow:$iterator}
         {var $primaryValue = $row->getValue(current($row->getMetadata()->getPrimaryKey()))}
         <tr class="{$row|formatRow}{if isset($selectable) && $selectable && isset($selectedItems) && isset($selectedItems[$primaryValue])} table-success{/if}" id="item{$primaryValue}">
             <td n:if="isset($selectable) && $selectable" class="selectable">

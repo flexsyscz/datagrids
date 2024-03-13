@@ -8,6 +8,7 @@ use Flexsyscz\Datagrids\Column;
 use Flexsyscz\FlashMessages\FlashMessages;
 use Flexsyscz\Localization\TranslatedComponent;
 use Latte\Attributes\TemplateFilter;
+use Latte\Essential\CachingIterator;
 use Nette\Application\AbortException;
 use Nette\Application\Attributes\Persistent;
 use Nette\Application\Responses\TextResponse;
@@ -58,6 +59,9 @@ abstract class Datagrid extends Control
 	/** @var callable|null */
 	private $rowFormatter = null;
 
+	/** @var callable|null */
+	private $virtualRowRenderer;
+
 	protected ICollection $collection;
 	protected Paginator $paginator;
 
@@ -88,9 +92,38 @@ abstract class Datagrid extends Control
 
 			$template->addFilter('formatRow', [$this, 'formatRow']);
 			$template->addFilter('renderCell', [$this, 'renderCell']);
+			$template->addFilter('renderVirtualRow', [$this, 'renderVirtualRow']);
 		}
 
 		return $template;
+	}
+
+
+	public function setVirtualRowRenderer(callable $virtualRowRenderer): self
+	{
+		$this->virtualRowRenderer = $virtualRowRenderer;
+
+		return $this;
+	}
+
+
+	public function getVirtualRowRenderer(): ?callable
+	{
+		return $this->virtualRowRenderer;
+	}
+
+
+	#[TemplateFilter]
+	public function renderVirtualRow(IEntity $row, CachingIterator $iterator): string|Html|null
+	{
+		$result = null;
+		if (is_callable($this->getVirtualRowRenderer())) {
+			$result = call_user_func_array($this->getVirtualRowRenderer(), [$row, $iterator]);
+		}
+
+		return is_string($result) || $result instanceof Html
+			? $result
+			: null;
 	}
 
 
