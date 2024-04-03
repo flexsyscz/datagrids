@@ -6,6 +6,7 @@ namespace Flexsyscz\Datagrids\DatagridControl;
 
 use Flexsyscz\Datagrids\Column;
 use Flexsyscz\FlashMessages\FlashMessages;
+use Flexsyscz\Localization\InvalidStateException;
 use Flexsyscz\Localization\TranslatedComponent;
 use Latte\Attributes\TemplateFilter;
 use Latte\Essential\CachingIterator;
@@ -87,7 +88,10 @@ abstract class Datagrid extends Control
 		$template = parent::createTemplate();
 		$template->setFile(__DIR__ . '/templates/table.latte');
 		if($template instanceof ApplicationLatte\Template) {
-			$this->translatorNamespace->dictionariesRepository->add(__DIR__ . '/translations', 'datagrid');
+			try {
+				$this->translatorNamespace->dictionariesRepository->add(__DIR__ . '/translations', 'datagrid');
+			} catch (InvalidStateException) {}
+
 			$template->setTranslator($this->translatorNamespace);
 
 			$template->addFilter('formatRow', [$this, 'formatRow']);
