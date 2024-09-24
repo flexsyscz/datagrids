@@ -15,7 +15,7 @@
         </tr>
     {else}
         <tr>
-            <td colspan="{count($columns)}" class="table-info text-center">
+            <td colspan="{count($columns) + (isset($selectable) && $selectable ? 1 : 0)}" class="table-info text-center">
                 <i class="fas fa-info-circle me-2"></i>{_'!datagrid.noResults'}
             </td>
         </tr>
