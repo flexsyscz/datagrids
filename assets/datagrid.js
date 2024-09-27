@@ -35,7 +35,7 @@ export default function() {
 
 				if (payload.selectedItems) {
 					for (const itemId in payload.selectedItems) {
-						Array.from(root.querySelectorAll('tr#item' + itemId)).forEach((tr) => {
+						Array.from(root.querySelectorAll("tr[id='item" + itemId + "']")).forEach((tr) => {
 							tr.classList.add('table-success')
 						})
 					}
