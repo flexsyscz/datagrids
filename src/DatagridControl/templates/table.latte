@@ -52,10 +52,11 @@
                 </div>
             </div>
             <div n:if="isset($selectable) && $selectable" class="ms-2 flex-grow-1">
-                <div class="btn-toolbar" role="toolbar" aria-label="{_'!datagrid.itemsSelection.toolbar'}">
+                <div class="btn-toolbar align-items-center" role="toolbar" aria-label="{_'!datagrid.itemsSelection.toolbar'}">
                     <div class="btn-group" role="group" aria-label="{_'!datagrid.itemsSelection.actions'}">
                         {input itemsSelectionSubmit class => "btn btn-sm btn-primary"}
                     </div>
+                    <div class="ms-2"><strong>{_'!datagrid.itemsSelection.count'}:</strong> <span class="badge text-bg-success" id="numberOfSelectedItems">{count($selectedItems)}</span></div>
                 </div>
             </div>
         </div>

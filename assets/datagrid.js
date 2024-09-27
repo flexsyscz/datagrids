@@ -39,6 +39,11 @@ export default function() {
 							tr.classList.add('table-success')
 						})
 					}
+
+					const count = root.querySelector('#numberOfSelectedItems')
+					if (count) {
+						count.textContent = Object.entries(payload.selectedItems).length
+					}
 				}
 			}).catch((err) => {
 				alert(err)
@@ -50,10 +55,19 @@ export default function() {
 		checkbox.addEventListener('change', (e) => {
 			const url = checkbox.dataset.fxsUrl
 			naja.makeRequest('POST', url, {state: checkbox.checked}, {history: false}).then((payload) => {
+				const root = checkbox.closest('.datagrid')
+				const count = root.querySelector('#numberOfSelectedItems')
+
 				if (payload.selected) {
 					checkbox.closest('tr').classList.add('table-success')
+					if (count) {
+						count.textContent = parseInt(count.textContent) + 1
+					}
 				} else {
 					checkbox.closest('tr').classList.remove('table-success')
+					if (count) {
+						count.textContent = parseInt(count.textContent) - 1
+					}
 				}
 			}).catch((err) => {
 				alert(err)

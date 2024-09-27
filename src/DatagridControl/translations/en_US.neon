@@ -14,6 +14,7 @@ filter:
 
 itemsSelection:
 	toolbar: Selection of items
+	count: Number of selected items
 	actions: Items selection action
 	submit:
 		label: Continue with selected items
