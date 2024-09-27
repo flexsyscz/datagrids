@@ -159,6 +159,12 @@ abstract class Datagrid extends Control
 	}
 
 
+	public function getNamespace(string $name): string
+	{
+		return sprintf('%s.%s', get_class($this), $name);
+	}
+
+
 	public function registerRowFormatter(callable $formatter): self
 	{
 		$this->rowFormatter = $formatter;
@@ -197,8 +203,10 @@ abstract class Datagrid extends Control
 	{
 		$columns = $this->adjustableColumns;
 		$session = $this->getSession();
-		if($session->offsetExists(self::OffsetColumns)) {
-			$_columns = $session->offsetGet(self::OffsetColumns);
+		$namespace = $this->getNamespace(self::OffsetColumns);
+
+		if($session->offsetExists($namespace)) {
+			$_columns = $session->offsetGet($namespace);
 			if (is_array($_columns)) {
 				foreach ($_columns as $name => $column) {
 					$columns[$name] = $column;
@@ -294,7 +302,9 @@ abstract class Datagrid extends Control
 					call_user_func(Callback::check($this->onAdjustColumns), $columns);
 				}
 
-				$this->getSession()->offsetSet(self::OffsetColumns, $columns);
+				$namespace = $this->getNamespace(self::OffsetColumns);
+				$this->getSession()->offsetSet($namespace, $columns);
+
 			} catch (InvalidArgumentException $e) {
 				$form->addError($e->getMessage());
 				return;
@@ -328,8 +338,10 @@ abstract class Datagrid extends Control
 
 		$items = [];
 		$session = $this->getSession();
-		if ($session->offsetExists(self::OffsetSelectedItems)) {
-			$items = $session->offsetGet(self::OffsetSelectedItems);
+		$namespace = $this->getNamespace(self::OffsetSelectedItems);
+
+		if ($session->offsetExists($namespace)) {
+			$items = $session->offsetGet($namespace);
 			if (!is_array($items)) {
 				$items = [];
 			}
@@ -344,7 +356,7 @@ abstract class Datagrid extends Control
 				unset($items[$itemId]);
 			}
 
-			$session->offsetSet(self::OffsetSelectedItems, $items);
+			$session->offsetSet($namespace, $items);
 			$payload = ['selected' => $state];
 
 		} else {
@@ -368,9 +380,11 @@ abstract class Datagrid extends Control
 		}
 
 		$session = $this->getSession();
+		$namespace = $this->getNamespace(self::OffsetSelectedItems);
+
 		$state = $presenter->getHttpRequest()->getPost('state') === 'true';
 		$items = $state ? $this->collection->fetchPairs('id', 'id') : [];
-		$session->offsetSet(self::OffsetSelectedItems, $items);
+		$session->offsetSet($namespace, $items);
 		$payload = [self::OffsetSelectedItems => $items];
 
 		$presenter->sendJson($payload);
@@ -384,10 +398,11 @@ abstract class Datagrid extends Control
 	public function setSelectedItems(array $itemIds): void
 	{
 		$session = $this->getSession();
+		$namespace = $this->getNamespace(self::OffsetSelectedItems);
 
 		$items = [];
-		if ($session->offsetExists(self::OffsetSelectedItems)) {
-			$items = $session->offsetGet(self::OffsetSelectedItems);
+		if ($session->offsetExists($namespace)) {
+			$items = $session->offsetGet($namespace);
 
 			if (!is_array($items)) {
 				$items = [];
@@ -401,15 +416,17 @@ abstract class Datagrid extends Control
 			}
 		}
 
-		$session->offsetSet(self::OffsetSelectedItems, $items);
+		$session->offsetSet($namespace, $items);
 	}
 
 
 	public function flushSelectedItems(): void
 	{
 		$session = $this->getSession();
-		if ($session->offsetExists(self::OffsetSelectedItems)) {
-			$session->offsetUnset(self::OffsetSelectedItems);
+		$namespace = $this->getNamespace(self::OffsetSelectedItems);
+
+		if ($session->offsetExists($namespace)) {
+			$session->offsetUnset($namespace);
 		}
 	}
 
