@@ -407,12 +407,12 @@ abstract class Datagrid extends Control
 			if (!is_array($items)) {
 				$items = [];
 			}
-		}
-
-		foreach ($itemIds as $itemId) {
-			$item = $this->collection->getById($itemId);
-			if ($item instanceof IEntity) {
-				$items[$itemId] = $itemId;
+		} else {
+			foreach ($itemIds as $itemId) {
+				$item = $this->collection->getById($itemId);
+				if ($item instanceof IEntity) {
+					$items[$itemId] = $itemId;
+				}
 			}
 		}
 
