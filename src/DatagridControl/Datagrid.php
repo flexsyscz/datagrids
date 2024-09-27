@@ -23,6 +23,7 @@ use Nette\InvalidArgumentException;
 use Nette\Utils\Callback;
 use Nette\Utils\Html;
 use Nette\Utils\Paginator;
+use Nette\Utils\Strings;
 use Nextras\Orm\Collection\ICollection;
 use Nextras\Orm\Entity\IEntity;
 
@@ -161,7 +162,7 @@ abstract class Datagrid extends Control
 
 	public function getNamespace(string $name): string
 	{
-		return sprintf('%s.%s', get_class($this), $name);
+		return sprintf('%s.%s', Strings::webalize(get_class($this->getPresenter())), $name);
 	}
 
 
