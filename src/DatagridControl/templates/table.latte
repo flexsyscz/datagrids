@@ -38,10 +38,7 @@
 
     {form filterForm class => filter-form}
         <div class="d-flex align-items-center mb-2">
-            <div n:if="$toolbar" class="flex-grow-1 toolbar">
-                {include $toolbar}
-            </div>
-            <div n:class="$toolbar ? ms-5, !isset($selectable) || !$selectable ? flex-grow-1">
+            <div n:class="!isset($selectable) || !$selectable ? flex-grow-1">
                 <div class="btn-toolbar" role="toolbar" aria-label="{_'!datagrid.filter.toolbar'}">
                     <div class="btn-group" role="group" aria-label="{_'!datagrid.filter.actions'}">
                         {input submit class => "btn btn-sm btn-outline-success"}
@@ -58,6 +55,9 @@
                     </div>
                     <div class="ms-2"><strong>{_'!datagrid.itemsSelection.count'}:</strong> <span class="badge text-bg-success" id="numberOfSelectedItems">{count($selectedItems)}</span></div>
                 </div>
+            </div>
+            <div n:if="$toolbar" class="ms-5 toolbar">
+                {include $toolbar}
             </div>
         </div>
         <div n:if="count($flashes) > 0" n:snippet="flashes">
