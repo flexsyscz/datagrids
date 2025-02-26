@@ -1,0 +1,16 @@
+{templateType Flexsyscz\Datagrids\DatagridControl\DatagridTemplate}
+
+<thead>
+	<tr class="{$table->getLayout()[thead]}">
+		<td class="text-center text-nowrap">#</td>
+		<th n:foreach="$table->getColumns() as $column">{_sprintf('columns.%s', $column->getName())}</th>
+	</tr>
+	<tr class="{$table->getLayout()[filter]}">
+		<td class="text-center"><i class="fas fa-filter"></i></td>
+		<td n:foreach="$table->getColumns() as $column">
+			{ifset $form[$column->getName()]}
+				{input $form[$column->getName()]}
+			{/ifset}
+		</td>
+	</tr>
+</thead>

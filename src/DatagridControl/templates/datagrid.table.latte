@@ -1,0 +1,12 @@
+{templateType Flexsyscz\Datagrids\DatagridControl\DatagridTemplate}
+
+{form filterForm class => "datagrid-filter-form"}
+	<ul n:if="$form->hasErrors()" class="form-errors">
+		<li n:foreach="$form->getErrors() as $error">{$error}</li>
+	</ul>
+	<table class="{$table->getLayout()[table]}">
+		{include datagrid.thead.latte, form: $form}
+		{include datagrid.tbody.latte}
+		{include datagrid.tfoot.latte}
+	</table>
+{/form}

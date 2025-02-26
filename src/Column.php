@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Flexsyscz\Datagrids;
+namespace Flexsyscz\Datagrids\Deprecated;
 
 
 final class Column

@@ -1,0 +1,16 @@
+{templateType Flexsyscz\Datagrids\DatagridControl\DatagridTemplate}
+
+<tbody>
+	<tr n:foreach="$table->getRows() as $row">
+		<td class="text-center">
+			<span class="badge bg-secondary-subtle text-dark">{$iterator->getCounter()}.</span>
+		</td>
+		<td n:foreach="$table->getColumns() as $column">
+			{if $column->isVirtual()}
+				VIRTUAL_{$column->getName()}
+			{else}
+				{$row->getValue($column->getName())}
+			{/if}
+		</td>
+	</tr>
+</tbody>
