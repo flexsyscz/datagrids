@@ -14,8 +14,8 @@
 		"php": ">=8.1",
 		"nette/application": "^3.2",
 		"nette/forms": "^3.2",
-		"flexsyscz/localization": "^1.0",
-		"flexsyscz/flash-messages": "^2.0",
+		"flexsyscz/application": "^1.0",
+		"flexsyscz/forms": "^2.0",
 		"nextras/orm": "^5.0"
 	},
 	"require-dev": {

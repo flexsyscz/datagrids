@@ -1,6 +1,6 @@
 {
   "name": "@flexsyscz/datagrids",
-  "version": "1.0.5",
+  "version": "2.0.1",
   "description": "Assets for github package flexsyscz/datagrids",
   "main": "assets/datagrid.js",
   "files": [
@@ -22,6 +22,6 @@
   "author": "Václav Lukeš",
   "license": "ISC",
   "dependencies": {
-    "naja": "^2.5.0"
+    "naja": "^3.2.0"
   }
 }

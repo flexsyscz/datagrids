@@ -1,11 +1,14 @@
 noResults: "neboli nájdené žiadne výsledky"
 numberOfResults: Počet záznamov
+of: z
 pageNavigation: Navigácia stránkovania
 nextPage: Ďalšia stránka
 previousPage: Predchádzajúca stránka
 
+toolbar: Nástroje datagridu
+selection: Výber záznamov
+processSelection: Spracovať vybrané záznamy
 filter:
-	toolbar: Nástroje filtra
 	actions: Akcia filtra
 	submit:
 		label: Filtrovať

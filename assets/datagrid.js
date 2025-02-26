@@ -1,77 +1,89 @@
-import naja from "naja";
+import naja from "naja/dist/Naja";
 
-export default function() {
-	Array.from(document.querySelectorAll('[data-fxs-toggle="adjustColumns"]')).forEach((el) => {
-		el.addEventListener('click', (e) => {
-			e.preventDefault()
+export default function () {
+	document.querySelectorAll('.datagrid').forEach((datagrid) => {
+		let count = datagrid.querySelector('#numberOfSelectedRows')
+		let currentCount = parseInt(count.textContent)
 
-			if (!el.dataset.state) {
-				el.dataset.state = 'true';
+		datagrid.querySelectorAll('.process-selection-btn').forEach((processSelectionBtn) => {
+			if (currentCount > 0) {
+				processSelectionBtn.classList.remove('disabled')
+			} else {
+				processSelectionBtn.classList.add('disabled')
 			}
-
-			const state = el.dataset.state === 'true';
-			Array.from(el.closest('.dropdown-menu').querySelectorAll('.adjustable-columns input[type=checkbox]')).forEach((el) => {
-				el.checked = state
-
-			});
-
-			el.dataset.state = state ? 'false' : 'true'
 		})
 	})
 
+	document.querySelectorAll('[id^="_dgRow_"]').forEach((checkbox) => {
+		checkbox.addEventListener('change', () => {
+			let url = checkbox.dataset.fxsUrl
+			if (url) {
+				naja.makeRequest('POST', url, {state: checkbox.checked}, {history: false}).then((payload) => {
+					let root = checkbox.closest('.datagrid')
+					let count = root.querySelector('#numberOfSelectedRows')
+					let classList = checkbox.closest('tr').classList
+					let currentCount = parseInt(count.textContent)
 
-	Array.from(document.querySelectorAll('input[type="checkbox"][data-fxs-toggle="allItems"]')).forEach((checkbox) => {
-		checkbox.addEventListener('change', (e) => {
-			Array.from(checkbox.closest('.datagrid').querySelectorAll('td.selectable input[name^=item]')).forEach((el) => {
-				el.checked = checkbox.checked
-			})
+					if (payload.selected) {
+						classList.add('table-success')
+						if (count) {
+							count.textContent = (currentCount + 1).toString()
+						}
+					} else {
+						classList.remove('table-success')
+						if (count) {
+							count.textContent = (currentCount - 1).toString()
+						}
+					}
 
-			const url = checkbox.dataset.fxsUrl
-			naja.makeRequest('POST', url, {state: checkbox.checked}, {history: false}).then((payload) => {
-				const root = checkbox.closest('.datagrid')
-				Array.from(root.querySelectorAll('tr[id^=item]')).forEach((tr) => {
-					tr.classList.remove('table-success')
+					let processSelectionBtn = root.querySelector('.process-selection-btn')
+					if (processSelectionBtn) {
+						if (parseInt(count.textContent) > 0) {
+							processSelectionBtn.classList.remove('disabled')
+						} else {
+							processSelectionBtn.classList.add('disabled')
+						}
+					}
+				}).catch((err) => {
+					alert(err)
 				})
-
-				if (payload.selectedItems) {
-					for (const itemId in payload.selectedItems) {
-						Array.from(root.querySelectorAll("tr[id='item" + itemId + "']")).forEach((tr) => {
-							tr.classList.add('table-success')
-						})
-					}
-
-					const count = root.querySelector('#numberOfSelectedItems')
-					if (count) {
-						count.textContent = Object.entries(payload.selectedItems).length
-					}
-				}
-			}).catch((err) => {
-				alert(err)
-			})
+			}
 		})
 	})
 
-	Array.from(document.querySelectorAll('input[type="checkbox"][data-fxs-toggle="item"]')).forEach((checkbox) => {
-		checkbox.addEventListener('change', (e) => {
-			const url = checkbox.dataset.fxsUrl
-			naja.makeRequest('POST', url, {state: checkbox.checked}, {history: false}).then((payload) => {
-				const root = checkbox.closest('.datagrid')
-				const count = root.querySelector('#numberOfSelectedItems')
+	document.querySelector('[id="_dgAllRows"]')?.addEventListener('change', (e) => {
+		let input = e.currentTarget
+		let url = input.dataset.fxsUrl
+		if (url) {
+			naja.makeRequest('POST', url, {state: input.checked}, {history: false}).then((payload) => {
+				let root = input.closest('.datagrid')
+				let count = root.querySelector('#numberOfSelectedRows')
 
-				if (payload.selected) {
-					checkbox.closest('tr').classList.add('table-success')
-					if (count) {
-						count.textContent = parseInt(count.textContent) + 1
-					}
-				} else {
-					checkbox.closest('tr').classList.remove('table-success')
-					if (count) {
-						count.textContent = parseInt(count.textContent) - 1
+				if (count) {
+					count.textContent = payload.count
+				}
+
+				let processSelectionBtn = root.querySelector('.process-selection-btn')
+				if (processSelectionBtn) {
+					if (parseInt(count.textContent) > 0) {
+						processSelectionBtn.classList.remove('disabled')
+					} else {
+						processSelectionBtn.classList.add('disabled')
 					}
 				}
+
+				root.querySelectorAll('tbody tr').forEach(row => {
+					row.querySelector('[id^="_dgRow_"]').checked = input.checked
+
+					if (payload.count) {
+						row.classList.add('table-success')
+					} else {
+						row.classList.remove('table-success')
+					}
+				})
 			}).catch((err) => {
 				alert(err)
 			})
-		})
+		}
 	})
 }

@@ -1,11 +1,14 @@
 noResults: "no results found"
 numberOfResults: Number of results
+of: of
 pageNavigation: Page navigation
 nextPage: Next page
 previousPage: Previous page
 
+toolbar: Datagrid toolbar
+selection: Rows selection
+processSelection: Process selection
 filter:
-	toolbar: Filter toolbar
 	actions: Filter actions
 	submit:
 		label: Filter

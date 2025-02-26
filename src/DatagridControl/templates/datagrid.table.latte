@@ -1,0 +1,23 @@
+{templateType Flexsyscz\Datagrids\DatagridControl\DatagridTemplate}
+
+{form filterForm class => "datagrid-filter-form"}
+	<ul n:if="$form->hasErrors()" class="form-errors">
+		<li n:foreach="$form->getErrors() as $error">{$error}</li>
+	</ul>
+	<div class="btn-toolbar mb-2" aria-label="{_'!datagrid.toolbar'}">
+		<div class="btn-group me-2" role="group" aria-label="{_'!datagrid.filter.actions'}">
+			{input submit class => "btn btn-sm btn-warning text-dark"}
+			{ifset $form[cancel]}
+				{input cancel class => "btn btn-sm btn-danger"}
+			{/ifset}
+		</div>
+		<div n:if="$selectable" class="btn-group me-2" role="group" aria-label="{_'!datagrid.selection'}">
+			<a n:href="processSelection" class="btn btn-sm btn-primary process-selection-btn">{_'!datagrid.processSelection'}</a>
+		</div>
+	</div>
+	<table class="{$table->getLayout()[table]}">
+		{include datagrid.thead.latte, form: $form}
+		{include datagrid.tbody.latte}
+		{include datagrid.tfoot.latte}
+	</table>
+{/form}
