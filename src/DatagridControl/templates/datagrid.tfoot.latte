@@ -1,0 +1,23 @@
+{templateType Flexsyscz\Datagrids\DatagridControl\DatagridTemplate}
+
+<tfoot>
+	<tr class="{$table->getLayout()[tfoot]}">
+		<td colspan="{count($table->getColumns()) + 1}">
+			<div class="d-flex align-items-center">
+				<div class="dropdown me-3">
+					<button class="btn btn-sm btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+						{$paginator->getItemsPerPage()}
+					</button>
+					<ul class="dropdown-menu">
+						<li n:foreach="$table->getItemsPerPagePresets() as $itemsPerPage">
+							<a n:class="dropdown-item, $itemsPerPage === $paginator->getItemsPerPage() ? active" n:href="this page => 1, itemsPerPage => $itemsPerPage">{$itemsPerPage}</a>
+						</li>
+					</ul>
+				</div>
+				<div class="me-3">
+					<strong>{_sprintf('!%s.numberOfResults', $namespace)}:</strong> {if $paginator->getItemCount() > $paginator->getItemsPerPage()}{$paginator->getItemsPerPage()} {_sprintf('!%s.of', $namespace)} {$paginator->getItemCount()}{else}{$paginator->getItemCount()}{/if}
+				</div>
+			</div>
+		</td>
+	</tr>
+</tfoot>
