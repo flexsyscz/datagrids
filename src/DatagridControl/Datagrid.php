@@ -19,6 +19,7 @@ use Nette\Application\UI\Template;
 use Nette\Bridges\ApplicationLatte;
 use Nette\Http\SessionSection;
 use Nette\Utils\Callback;
+use Nette\Utils\Html;
 use Nette\Utils\Paginator;
 use Nextras\Orm\Collection\ICollection;
 use Nextras\Orm\Entity\IEntity;
@@ -49,6 +50,9 @@ abstract class Datagrid extends Control implements Injectable
 
 	/** @var array<callable(array<E>): void> */
 	public array $onSelect = [];
+
+	private ?Html $customToolbar = null;
+	private bool $customToolbarMarginEndAuto = false;
 
 	#[Persistent]
 	public int $page = 1;
@@ -152,6 +156,15 @@ abstract class Datagrid extends Control implements Injectable
 	}
 
 
+	public function setCustomToolbar(?Html $customToolbar, bool $marginEndAuto = false): self
+	{
+		$this->customToolbar = $customToolbar;
+		$this->customToolbarMarginEndAuto = $marginEndAuto;
+
+		return $this;
+	}
+
+
 	public function render(): void
 	{
 		$template = $this->createTemplate(DatagridTemplate::class);
@@ -166,6 +179,8 @@ abstract class Datagrid extends Control implements Injectable
 		$template->sortBy = $this->sortBy;
 		$template->order = $this->order;
 		$template->selectable = count($this->onSelect) > 0;
+		$template->customToolbar = $this->customToolbar;
+		$template->customToolbarMarginEndAuto = $this->customToolbarMarginEndAuto;
 
 		$selectedRows = $this->getSession(self::$selectionStoragePrefix)->get('ids');
 		$template->selectedRows = is_array($selectedRows) ? $selectedRows : [];

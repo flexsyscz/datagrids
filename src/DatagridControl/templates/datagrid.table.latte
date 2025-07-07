@@ -4,15 +4,18 @@
 	<ul n:if="$form->hasErrors()" class="form-errors">
 		<li n:foreach="$form->getErrors() as $error">{$error}</li>
 	</ul>
-	<div class="btn-toolbar mb-2" aria-label="{_'!datagrid.toolbar'}">
-		<div class="btn-group me-2" role="group" aria-label="{_'!datagrid.filter.actions'}">
-			{input submit class => "btn btn-sm btn-warning text-dark"}
-			{ifset $form[cancel]}
-				{input cancel class => "btn btn-sm btn-danger"}
-			{/ifset}
-		</div>
-		<div n:if="$selectable" class="btn-group me-2" role="group" aria-label="{_'!datagrid.selection'}">
-			<a n:href="processSelection" class="btn btn-sm btn-primary process-selection-btn">{_'!datagrid.processSelection'}</a>
+	<div class="d-flex align-items-center mb-2">
+		<div n:if="$customToolbar" n:class="$customToolbarMarginEndAuto ? flex-grow-1 : me-4">{$customToolbar}</div>
+		<div class="btn-toolbar" aria-label="{_'!datagrid.toolbar'}">
+			<div n:class="btn-group, $selectable ? me-2" role="group" aria-label="{_'!datagrid.filter.actions'}">
+				{input submit class => "btn btn-sm btn-warning text-dark"}
+				{ifset $form[cancel]}
+					{input cancel class => "btn btn-sm btn-danger"}
+				{/ifset}
+			</div>
+			<div n:if="$selectable" class="btn-group me-2" role="group" aria-label="{_'!datagrid.selection'}">
+				<a n:href="processSelection" class="btn btn-sm btn-primary process-selection-btn">{_'!datagrid.processSelection'}</a>
+			</div>
 		</div>
 	</div>
 	<table class="{$table->getLayout()[table]}">

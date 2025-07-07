@@ -6,6 +6,7 @@ namespace Flexsyscz\Datagrids\DatagridControl;
 use Flexsyscz\Datagrids\Core\Table;
 use Flexsyscz\FlashMessages\FlashMessage;
 use Nette\Bridges\ApplicationLatte\Template;
+use Nette\Utils\Html;
 use Nette\Utils\Paginator;
 use Nextras\Orm\Entity\IEntity;
 use stdClass;
@@ -30,4 +31,6 @@ final class DatagridTemplate extends Template
 
 	/** @var array<int|string> */
 	public array $selectedRows;
+	public ?Html $customToolbar;
+	public bool $customToolbarMarginEndAuto;
 }
