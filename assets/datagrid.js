@@ -3,7 +3,7 @@ import naja from "naja/dist/Naja";
 export default function () {
 	document.querySelectorAll('.datagrid').forEach((datagrid) => {
 		let count = datagrid.querySelector('#numberOfSelectedRows')
-		let currentCount = parseInt(count.textContent)
+		let currentCount = count ? parseInt(count.textContent) : 0
 
 		datagrid.querySelectorAll('.process-selection-btn').forEach((processSelectionBtn) => {
 			if (currentCount > 0) {

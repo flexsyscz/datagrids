@@ -1,6 +1,6 @@
 {
   "name": "@flexsyscz/datagrids",
-  "version": "2.0.1",
+  "version": "2.0.2",
   "description": "Assets for github package flexsyscz/datagrids",
   "main": "assets/datagrid.js",
   "files": [
