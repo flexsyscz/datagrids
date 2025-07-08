@@ -33,4 +33,5 @@ final class DatagridTemplate extends Template
 	public array $selectedRows;
 	public ?Html $customToolbar;
 	public bool $customToolbarMarginEndAuto;
+	public bool $showCounter;
 }

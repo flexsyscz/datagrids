@@ -2,15 +2,15 @@
 
 <thead>
 	<tr class="{$table->getLayout()[thead]}">
-		<td class="text-center text-nowrap">
+		<td n:if="$selectable || $showCounter" class="text-center text-nowrap">
 			{if $selectable}
-			<div class="form-check">
-				<input class="form-check-input" type="checkbox" value="" id="_dgAllRows" data-fxs-url="{link toggleAllRows}"{if count($selectedRows) === $paginator->getItemCount()} checked{/if}>
-				<label class="form-check-label w-100" for="_dgAllRows">
-					<span class="badge bg-success" id="numberOfSelectedRows">{count($selectedRows)}</span>
-				</label>
-			</div>
-			{else}#{/if}
+				<div class="form-check">
+					<input class="form-check-input" type="checkbox" value="" id="_dgAllRows" data-fxs-url="{link toggleAllRows}"{if count($selectedRows) === $paginator->getItemCount()} checked{/if}>
+					<label class="form-check-label w-100" for="_dgAllRows">
+						<span class="badge bg-success" id="numberOfSelectedRows">{count($selectedRows)}</span>
+					</label>
+				</div>
+			{elseif $showCounter}#{/if}
 		</td>
 		<th n:foreach="$table->getColumns() as $column">
 			<div class="d-flex align-items-start">
@@ -24,7 +24,7 @@
 		</th>
 	</tr>
 	<tr class="{$table->getLayout()[filter]}">
-		<td class="text-center"><i class="fas fa-filter"></i></td>
+		<td class="text-center" n:if="$selectable || $showCounter"><i class="fas fa-filter"></i></td>
 		<td n:foreach="$table->getColumns() as $column">
 			{ifset $form[$column->getName()]}
 				{input $form[$column->getName()]}

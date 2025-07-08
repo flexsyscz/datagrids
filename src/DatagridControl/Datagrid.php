@@ -53,6 +53,7 @@ abstract class Datagrid extends Control implements Injectable
 
 	private ?Html $customToolbar = null;
 	private bool $customToolbarMarginEndAuto = false;
+	private bool $showCounter = false;
 
 	#[Persistent]
 	public int $page = 1;
@@ -165,6 +166,14 @@ abstract class Datagrid extends Control implements Injectable
 	}
 
 
+	public function showCounter(bool $show = true): self
+	{
+		$this->showCounter = $show;
+
+		return $this;
+	}
+
+
 	public function render(): void
 	{
 		$template = $this->createTemplate(DatagridTemplate::class);
@@ -181,6 +190,7 @@ abstract class Datagrid extends Control implements Injectable
 		$template->selectable = count($this->onSelect) > 0;
 		$template->customToolbar = $this->customToolbar;
 		$template->customToolbarMarginEndAuto = $this->customToolbarMarginEndAuto;
+		$template->showCounter = $this->showCounter;
 
 		$selectedRows = $this->getSession(self::$selectionStoragePrefix)->get('ids');
 		$template->selectedRows = is_array($selectedRows) ? $selectedRows : [];

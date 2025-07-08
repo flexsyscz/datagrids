@@ -2,13 +2,13 @@
 
 <tbody>
 	<tr n:foreach="$table->getRows() as $row" n:class="isset($selectedRows[$row->getValue('id')]) ? table-success, $table->formatRow($row)">
-		<td class="text-center">
+		<td n:if="$selectable || $showCounter" class="text-center">
 			{if $selectable && $row->hasValue('id')}
 				<div class="form-check">
 					<input class="form-check-input" type="checkbox" value="" id="_dgRow_{$row->getValue('id')}" data-fxs-url="{link toggleRow $row->getValue('id')}"{ifset $selectedRows[$row->getValue('id')]} checked{/ifset}>
 					<label class="form-check-label w-100" for="_dgRow_{$row->getValue('id')}">{$iterator->getCounter()}.</label>
 				</div>
-			{else}
+			{elseif $showCounter}
 				{$iterator->getCounter()}.
 			{/if}
 		</td>
