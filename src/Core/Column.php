@@ -56,7 +56,7 @@ class Column
 	{
 		try {
 			$callback = Callback::check($this->renderer);
-			$args[] = [$value, $row];
+			$args = [$value, $row];
 			if ($this->virtual) {
 				$args = [$row];
 			}
