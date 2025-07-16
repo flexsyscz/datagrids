@@ -21,6 +21,7 @@ use Nette\Http\SessionSection;
 use Nette\Utils\Callback;
 use Nette\Utils\Html;
 use Nette\Utils\Paginator;
+use Nette\Utils\Random;
 use Nextras\Orm\Collection\ICollection;
 use Nextras\Orm\Entity\IEntity;
 
@@ -189,6 +190,7 @@ abstract class Datagrid extends Control implements Injectable
 		}
 
 		$template->namespace = self::$namespace;
+		$template->datagridId = Random::generate();
 		$template->table = $this->table;
 		$template->paginator = $this->paginator;
 		$template->sortBy = $this->sortBy;

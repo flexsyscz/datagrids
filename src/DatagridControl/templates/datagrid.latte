@@ -1,6 +1,6 @@
 {templateType Flexsyscz\Datagrids\DatagridControl\DatagridTemplate}
 
-<div class="datagrid">
+<div class="datagrid" id="{$namespace}_{$datagridId}">
 	<div n:foreach="$flashes as $flash" n:class="flash, $flash->type">{$flash->message}</div>
 	{include datagrid.table.latte}
 </div>

@@ -21,6 +21,7 @@ final class DatagridTemplate extends Template
 	public array $flashes = [];
 
 	public string $namespace;
+	public string $datagridId;
 
 	/** @var Table<E> */
 	public Table $table;

@@ -1,7 +1,7 @@
 import naja from "naja/dist/Naja";
 
 export default function () {
-	document.querySelectorAll('.datagrid').forEach((datagrid) => {
+	document.querySelectorAll('.datagrid:not([data-initialized])').forEach((datagrid) => {
 		let count = datagrid.querySelector('#numberOfSelectedRows')
 		let currentCount = count ? parseInt(count.textContent) : 0
 
@@ -12,28 +12,54 @@ export default function () {
 				processSelectionBtn.classList.add('disabled')
 			}
 		})
-	})
 
-	document.querySelectorAll('[id^="_dgRow_"]').forEach((checkbox) => {
-		checkbox.addEventListener('change', () => {
-			let url = checkbox.dataset.fxsUrl
+		datagrid.querySelectorAll('[id^="_dgRow_"]').forEach((checkbox) => {
+			checkbox.addEventListener('change', () => {
+				let url = checkbox.dataset.fxsUrl
+				if (url) {
+					naja.makeRequest('POST', url, {state: checkbox.checked}, {history: false}).then((payload) => {
+						let root = checkbox.closest('.datagrid')
+						let count = root.querySelector('#numberOfSelectedRows')
+						let classList = checkbox.closest('tr').classList
+						let currentCount = parseInt(count.textContent)
+
+						if (payload.selected) {
+							classList.add('table-success')
+							if (count) {
+								count.textContent = (currentCount + 1).toString()
+							}
+						} else {
+							classList.remove('table-success')
+							if (count) {
+								count.textContent = (currentCount - 1).toString()
+							}
+						}
+
+						let processSelectionBtn = root.querySelector('.process-selection-btn')
+						if (processSelectionBtn) {
+							if (parseInt(count.textContent) > 0) {
+								processSelectionBtn.classList.remove('disabled')
+							} else {
+								processSelectionBtn.classList.add('disabled')
+							}
+						}
+					}).catch((err) => {
+						alert(err)
+					})
+				}
+			})
+		})
+
+		datagrid.querySelector('[id^="_dgAllRows_"]')?.addEventListener('change', (e) => {
+			let input = e.currentTarget
+			let url = input.dataset.fxsUrl
 			if (url) {
-				naja.makeRequest('POST', url, {state: checkbox.checked}, {history: false}).then((payload) => {
-					let root = checkbox.closest('.datagrid')
+				naja.makeRequest('POST', url, {state: input.checked}, {history: false}).then((payload) => {
+					let root = input.closest('.datagrid')
 					let count = root.querySelector('#numberOfSelectedRows')
-					let classList = checkbox.closest('tr').classList
-					let currentCount = parseInt(count.textContent)
 
-					if (payload.selected) {
-						classList.add('table-success')
-						if (count) {
-							count.textContent = (currentCount + 1).toString()
-						}
-					} else {
-						classList.remove('table-success')
-						if (count) {
-							count.textContent = (currentCount - 1).toString()
-						}
+					if (count) {
+						count.textContent = payload.count
 					}
 
 					let processSelectionBtn = root.querySelector('.process-selection-btn')
@@ -44,46 +70,22 @@ export default function () {
 							processSelectionBtn.classList.add('disabled')
 						}
 					}
+
+					root.querySelectorAll('tbody tr').forEach(row => {
+						row.querySelector('[id^="_dgRow_"]').checked = input.checked
+
+						if (payload.count) {
+							row.classList.add('table-success')
+						} else {
+							row.classList.remove('table-success')
+						}
+					})
 				}).catch((err) => {
 					alert(err)
 				})
 			}
 		})
-	})
 
-	document.querySelector('[id="_dgAllRows"]')?.addEventListener('change', (e) => {
-		let input = e.currentTarget
-		let url = input.dataset.fxsUrl
-		if (url) {
-			naja.makeRequest('POST', url, {state: input.checked}, {history: false}).then((payload) => {
-				let root = input.closest('.datagrid')
-				let count = root.querySelector('#numberOfSelectedRows')
-
-				if (count) {
-					count.textContent = payload.count
-				}
-
-				let processSelectionBtn = root.querySelector('.process-selection-btn')
-				if (processSelectionBtn) {
-					if (parseInt(count.textContent) > 0) {
-						processSelectionBtn.classList.remove('disabled')
-					} else {
-						processSelectionBtn.classList.add('disabled')
-					}
-				}
-
-				root.querySelectorAll('tbody tr').forEach(row => {
-					row.querySelector('[id^="_dgRow_"]').checked = input.checked
-
-					if (payload.count) {
-						row.classList.add('table-success')
-					} else {
-						row.classList.remove('table-success')
-					}
-				})
-			}).catch((err) => {
-				alert(err)
-			})
-		}
+		datagrid.dataset.initialized = "true"
 	})
 }
