@@ -166,6 +166,12 @@ abstract class Datagrid extends Control implements Injectable
 	}
 
 
+	public function hasCustomToolbar(): bool
+	{
+		return $this->customToolbar !== null;
+	}
+
+
 	public function showCounter(bool $show = true): self
 	{
 		$this->showCounter = $show;
