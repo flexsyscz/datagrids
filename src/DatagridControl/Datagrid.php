@@ -137,15 +137,16 @@ abstract class Datagrid extends Control implements Injectable
 			if (!$this->translatorNamespace->repository->has(self::$namespace)) {
 				try {
 					$this->translatorNamespace->repository->add(__DIR__ . '/translations', self::$namespace);
-					$template->setTranslator($this->translatorNamespace);
-					$template->getLatte()->addExtension(new ApplicationLatte\UIExtension($this))
-						->addExtension(new TranslatorExtension(
-							$this->translatorNamespace->translate(...)
-						));
 				} catch (InvalidNamespaceException $e) {
 					$this->flashError($e->getMessage());
 				}
 			}
+
+			$template->setTranslator($this->translatorNamespace);
+			$template->getLatte()->addExtension(new ApplicationLatte\UIExtension($this))
+				->addExtension(new TranslatorExtension(
+					$this->translatorNamespace->translate(...)
+				));
 		}
 
 		return $template;
