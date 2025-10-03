@@ -162,6 +162,10 @@ abstract class Datagrid extends Control implements Injectable
 	}
 
 
+	/**
+	 * @param int[]|string[] $ids
+	 * @return Datagrid<E>
+	 */
 	public function setDefaultSelection(array $ids): self
 	{
 		$this->defaultSelection = $ids;
@@ -170,6 +174,11 @@ abstract class Datagrid extends Control implements Injectable
 	}
 
 
+	/**
+	 * @param Html|null $customToolbar
+	 * @param bool $marginEndAuto
+	 * @return Datagrid<E>
+	 */
 	public function setCustomToolbar(?Html $customToolbar, bool $marginEndAuto = false): self
 	{
 		$this->customToolbar = $customToolbar;
@@ -185,6 +194,10 @@ abstract class Datagrid extends Control implements Injectable
 	}
 
 
+	/**
+	 * @param bool $show
+	 * @return Datagrid<E>
+	 */
 	public function showCounter(bool $show = true): self
 	{
 		$this->showCounter = $show;

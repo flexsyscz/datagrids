@@ -49,6 +49,9 @@ final class Table
 	}
 
 
+	/**
+	 * @return ICollection<E>
+	 */
 	public function getCollection(): ICollection
 	{
 		return $this->collection;
@@ -136,6 +139,10 @@ final class Table
 	}
 
 
+	/**
+	 * @param callable $callback
+	 * @return Table<E>
+	 */
 	public function addRowFormatter(callable $callback): self
 	{
 		$this->rowFormatters[] = $callback;
@@ -144,6 +151,10 @@ final class Table
 	}
 
 
+	/**
+	 * @param callable $callback
+	 * @return Table<E>
+	 */
 	public function addCellFormatter(callable $callback): self
 	{
 		$this->cellFormatters[] = $callback;
