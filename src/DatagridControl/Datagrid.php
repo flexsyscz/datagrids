@@ -56,6 +56,9 @@ abstract class Datagrid extends Control implements Injectable
 	private bool $customToolbarMarginEndAuto = false;
 	private bool $showCounter = false;
 
+	/** @var int[]|string[] */
+	private array $defaultSelection = [];
+
 	#[Persistent]
 	public int $page = 1;
 
@@ -159,6 +162,14 @@ abstract class Datagrid extends Control implements Injectable
 	}
 
 
+	public function setDefaultSelection(array $ids): self
+	{
+		$this->defaultSelection = $ids;
+
+		return $this;
+	}
+
+
 	public function setCustomToolbar(?Html $customToolbar, bool $marginEndAuto = false): self
 	{
 		$this->customToolbar = $customToolbar;
@@ -201,8 +212,13 @@ abstract class Datagrid extends Control implements Injectable
 		$template->customToolbarMarginEndAuto = $this->customToolbarMarginEndAuto;
 		$template->showCounter = $this->showCounter;
 
-		$selectedRows = $this->getSession(self::$selectionStoragePrefix)->get('ids');
-		$template->selectedRows = is_array($selectedRows) ? $selectedRows : [];
+		$selectionStorage = $this->getSession(self::$selectionStoragePrefix);
+		$selectedRows = $selectionStorage->get('ids');
+		if (!$selectedRows) {
+			$selectedRows = $this->defaultSelection;
+			$selectionStorage->set('ids', $selectedRows);
+		}
+		$template->selectedRows = $selectedRows;
 
 		$template->render();
 	}
