@@ -14,8 +14,30 @@
 						</li>
 					</ul>
 				</div>
-				<div class="me-3">
-					<strong>{_sprintf('!%s.numberOfResults', $namespace)}:</strong> {if $paginator->getItemCount() > $paginator->getItemsPerPage()}{$paginator->getItemsPerPage()} {_sprintf('!%s.of', $namespace)} {$paginator->getItemCount()}{else}{$paginator->getItemCount()}{/if}
+				<div>
+					<strong>{_sprintf('!%s.numberOfResults', $namespace)}:</strong> {if $paginator->getItemCount() > $paginator->getItemsPerPage()}{$paginator->getItemsPerPage() * ($paginator->getPage() - 1) + 1} - {$paginator->getItemsPerPage() * $paginator->getPage()} {_sprintf('!%s.of', $namespace)} {$paginator->getItemCount()}{else}{$paginator->getItemCount()}{/if}
+				</div>
+				<div n:if="$paginator->getItemCount() > $paginator->getItemsPerPage()" class="flex-grow-1">
+					<nav>
+						<ul class="pagination justify-content-center mb-0" aria-label="{_sprintf('!%s.pageNavigation', $namespace)}">
+							{var $currentPage = $paginator->getPage()}
+							{var $prev = $currentPage - 1}
+							{var $next = $currentPage + 1}
+							<li n:class="page-item, $prev < 1 ? disabled">
+								<a class="page-link" n:href="this page => $prev" aria-label="{_sprintf('!%s.previousPage', $namespace)}">
+									<span aria-hidden="true">&laquo;</span>
+								</a>
+							</li>
+							<li n:foreach="$pagesRange as $pageNo" n:class="page-item, $currentPage === $pageNo ? active">
+								<a class="page-link" n:href="this page => $pageNo">{$pageNo}</a>
+							</li>
+							<li n:class="page-item, $next > $paginator->getPageCount()">
+								<a class="page-link" n:href="this page => $next" aria-label="{_sprintf('!%s.nextPage', $namespace)}">
+									<span aria-hidden="true">&raquo;</span>
+								</a>
+							</li>
+						</ul>
+					</nav>
 				</div>
 			</div>
 		</td>

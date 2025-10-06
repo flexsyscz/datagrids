@@ -206,6 +206,40 @@ abstract class Datagrid extends Control implements Injectable
 	}
 
 
+	/**
+	 * @return array<int>
+	 */
+	private function getPagesRange(): array
+	{
+		$range = 3;
+		$total = $this->paginator->getPageCount();
+		$current = $this->paginator->getPage();
+
+		if ($total <= ($range * 2)) {
+			return range(1, $total);
+		}
+
+		$start = $current - $range;
+		$end = $current + $range;
+
+		if ($start < 1) {
+			$end += (1 - $start);
+			$start = 1;
+		}
+
+		if ($end > $total) {
+			$start -= ($end - $total);
+			$end = $total;
+		}
+
+		if ($start < 1) {
+			$start = 1;
+		}
+
+		return range($start, $end);
+	}
+
+
 	public function render(): void
 	{
 		$template = $this->createTemplate(DatagridTemplate::class);
@@ -232,6 +266,8 @@ abstract class Datagrid extends Control implements Injectable
 			$selectionStorage->set('ids', $selectedRows);
 		}
 		$template->selectedRows = $selectedRows;
+
+		$template->pagesRange = $this->getPagesRange();
 
 		$template->render();
 	}
