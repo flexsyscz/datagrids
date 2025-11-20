@@ -102,9 +102,10 @@ final class Table
 	 * @param string $name
 	 * @param bool $virtual
 	 * @param callable|null $renderer
+	 * @param callable|null $sorter
 	 * @return Table<E>
 	 */
-	public function addColumn(string $name, bool $virtual = false, ?callable $renderer = null): self
+	public function addColumn(string $name, bool $virtual = false, ?callable $renderer = null, ?callable $sorter = null): self
 	{
 		if (isset($this->columns[$name])) {
 			throw new ColumnAlreadyRegistered();
@@ -114,6 +115,10 @@ final class Table
 		$column = new Column($name, $virtual);
 		if ($renderer !== null) {
 			$column->setRenderer($renderer);
+		}
+
+		if ($sorter !== null) {
+			$column->setSorter($sorter);
 		}
 
 		$this->columns[$name] = $column;
