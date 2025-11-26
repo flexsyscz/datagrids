@@ -18,7 +18,7 @@
 					<a n:href="sort by => $column->getName(), page => 1">{_sprintf('columns.%s', $column->getName())}</a>
 				</div>
 				<div class="ms-3">
-					<i n:if="$sortBy === $column->getName()" n:class="fas, $order === Nextras\Orm\Collection\ICollection::ASC ? fa-sort-down : fa-sort-up"></i>
+					<i n:if="$sortBy === $column->getName()" n:class="fas, $order === Nextras\Orm\Collection\ICollection::ASC ? fa-sort-up : fa-sort-down"></i>
 				</div>
 			</div>
 		</th>
