@@ -1,6 +1,6 @@
 {templateType Flexsyscz\Datagrids\DatagridControl\DatagridTemplate}
 
-{form filterForm class => "datagrid-filter-form"}
+{form filterForm class => "datagrid-filter-form " . $form->getElementPrototype()->class}
 	<ul n:if="$form->hasErrors()" class="form-errors">
 		<li n:foreach="$form->getErrors() as $error">{$error}</li>
 	</ul>
