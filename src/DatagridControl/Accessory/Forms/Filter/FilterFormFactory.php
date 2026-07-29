@@ -60,7 +60,7 @@ abstract class FilterFormFactory
 	{
 		try {
 			$defaults = $this->filterStorage->get(self::Values);
-			$form->setDefaults($defaults instanceof FilterFormValues ? $defaults : []);
+			$form->setDefaults($defaults instanceof FilterFormValues ? get_object_vars($defaults) : []);
 		} catch (InvalidArgumentException) {}
 	}
 
